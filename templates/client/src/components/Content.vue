@@ -24,6 +24,7 @@ export default {
   },
 
   mounted () {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.jwt
     axios.get('/test').then(result => {
       this.user = result.data.user
     })
@@ -31,9 +32,8 @@ export default {
 
   methods: {
     logout () {
-      axios.delete('auth').then(() => {
-        this.loggedOut = true
-      })
+      this.$store.commit('clearJWT')
+      this.$router.push('/login')
     }
   }
 }
