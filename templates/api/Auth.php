@@ -4,11 +4,18 @@ use \Firebase\JWT\JWT;
 
 class Auth
 {
-  public static function auth() 
-  {
-    if(wire('user')->isGuest())
-      throw new \Exception('user is not logged in', 401);
 
+  public static function auth($vars=null) 
+  {
+    
+    if(isset($vars)) {
+      if (!$vars->userId) throw new \Exception('user is not logged in', 401);
+      else {
+        $user = wire('users')->get($vars->userId);
+        if ($user->isGuest()) throw new \Exception('user is not logged in (is guest)', 401);
+      }
+    } 
+    
     if(!isset(wire('config')->jwtSecret)) {
       throw new \Exception('incorrect site config', 500);
     }
@@ -24,6 +31,7 @@ class Auth
       "iat" => $issuedAt, // issued at
       "nbf" => $notBefore, // valid not before
       "exp" => $expire, // token expire time
+      "userId" => wire('user')->id
     );
 
     $jwt = JWT::encode($token, wire('config')->jwtSecret);
@@ -32,7 +40,6 @@ class Auth
     $response->jwt = $jwt;
     return $response;
   }
-
   public static function login($data) {
     ApiHelper::checkAndSanitizeRequiredParameters($data, ['username|selectorValue', 'password|string']);
 
@@ -51,5 +58,10 @@ class Auth
   public static function logout() {
     wire('session')->logout(wire('user'));
     return 'user logged out';
+  }
+  
+  public static function preflight() 
+  {
+    return "OK";
   }
 }
