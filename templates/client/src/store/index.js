@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VuexPersist from 'vuex-persist'
 
 import state from '@/store/state'
 import * as mutations from '@/store/mutations'
@@ -10,6 +11,11 @@ Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 
+const vuexPersist = new VuexPersist({
+  key: 'my-app',
+  storage: sessionStorage
+})
+
 export default new Vuex.Store({
   state,
   mutations,
@@ -17,5 +23,6 @@ export default new Vuex.Store({
   getters,
   strict: debug,
   modules: {
-  }
+  },
+  plugins: [vuexPersist.plugin]
 })
