@@ -1,6 +1,7 @@
-import axios from 'axios'
-
 export const setJWT = (state, jwt) => {
-  axios.defaults.headers.common['Authorization'] = 'Bearer' + jwt
   state.jwt = jwt
+}
+
+export const clearJWT = (state) => {
+  state.jwt = null
 }
