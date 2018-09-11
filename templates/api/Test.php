@@ -4,12 +4,14 @@ require_once dirname(__FILE__) . "/ApiHelper.php";
 
 class Test
 {
-  public static function getSomeData() {
-    // return 'Api Endpoint: ' . date(DATE_ISO8601);
-    $data = new \StdClass();
-    $data->user = wire('user')->name;
+  public static function getSomeData($data) {
+    
+    // get user from user id
+    $user = wire('users')->get($data->userId);
 
-    return $data;
+    $response = new \StdClass();
+    $response->user = $user->name;
+     return $response;
   }
 
   public static function postWithSomeData($data) {
